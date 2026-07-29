@@ -6,6 +6,9 @@
 -- Enable UUID extension (already on by default in Supabase)
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Required for the double-booking exclusion constraint on the bookings table
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+
 -- ── VILLAS ──────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS villas (
   id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -93,8 +96,3 @@ CREATE INDEX IF NOT EXISTS idx_bookings_villa_id   ON bookings(villa_id);
 CREATE INDEX IF NOT EXISTS idx_bookings_checkin    ON bookings(checkin);
 CREATE INDEX IF NOT EXISTS idx_bookings_status     ON bookings(status);
 CREATE INDEX IF NOT EXISTS idx_villas_status       ON villas(status);
-
--- ── BTREE_GIST extension needed for the exclusion constraint ─────────────────
--- If the exclusion constraint above errors, run this first:
--- CREATE EXTENSION IF NOT EXISTS btree_gist;
--- Then re-run the bookings table creation.
