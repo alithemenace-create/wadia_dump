@@ -1,0 +1,40 @@
+# render.yaml — Deploy Lumière Villas backend to Render
+# Docs: https://render.com/docs/blueprint-spec
+#
+# HOW TO USE:
+#   1. Push this repo to GitHub
+#   2. Go to render.com → New → Blueprint → connect your repo
+#   3. Render will detect this file and create the service automatically
+#   4. Set the secret env vars in the Render dashboard (see below)
+
+services:
+  - type: web
+    name: lumiere-villas-api
+    runtime: node
+    region: singapore           # closest to Mumbai — change if needed
+                                # options: oregon, frankfurt, ohio, singapore, virginia
+    plan: free                  # upgrade to 'starter' ($7/mo) for always-on
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: PORT
+        value: 3001
+
+      # ── Set these in the Render dashboard (not here — keep secrets out of git) ──
+      - key: SUPABASE_URL
+        sync: false             # Render will prompt you to enter this manually
+
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false             # same — enter in dashboard
+
+      - key: ADMIN_SECRET
+        sync: false             # strong random string for CMS auth
+
+      - key: ALLOWED_ORIGINS
+        sync: false             # your frontend URL(s), comma-separated
+                                # e.g. https://lumierevillas.com,https://www.lumierevillas.com
